@@ -25,38 +25,37 @@ CREATE TABLE album (
      VALUES  ('Gotye',  'Making  Mirrors');
 ```
 
-所选择的测试数据是英国亚马逊畅销书的写作时间！
+所选择的测试数据是英国亚马逊畅销书的相关信息!
 
 现在数据库中有了一些数据，可以为其编写一个简单的模型。
 
 ## 模型文件
 
-Zend Framework 没有提供 `Zend\Model` 控件，因为模型是你的业务逻辑，取决于你想让它如何工作。
-根据你的需求，这里任然有很多控件可以供你使用。一种方法是，在你的程序中模型类对应一种实体，然后使用映射器对象来加载和存储实体到数据库。另一种是使用对象关系映射计算，例如 Doctrine 或者 Propel。
+Zend Framework 没有提供 `Zend\Model` 控件，因为模型是你的业务逻辑，取决于你想让它如何工作。根据你的需求，这里任然有很多控件可以供你使用。一种方法是，在你的程序中模型类对应一种实体，然后使用映射器对象来加载和存储实体到数据库。另一种是使用对象关系映射计算，例如 Doctrine 或者 Propel。
 
-在这个向导中，每一个 album 就是一个 `Album` 对象（或者说是实体），通过使用 `Zend\Db\TableGateway\TableGateway` 构建一个 `AlbumTable` 类，然后使用 `AlbumTable` 构建一个简单的模型。在数据库的表中，Table Data Gateway 的设计模式可以实现数据接口。请注意，虽然 Table Data Gateway 模式在大系统中可能会被限制。但这个也会是个诱惑，如果你把数据库访问代码放进控制器的动作方法，`Zend\Db\TableGateway\AbstractTableGateway` 就会暴露这些代码。请不要这么做！
+在这个向导中，每一个 album 就是一个 `Album` 对象（或者说是实体），通过使用 `Zend\Db\TableGateway\TableGateway` 构建一个 `AlbumTable` 类，然后使用 `AlbumTable` 构建一个简单的模型。在数据库的表中，Table Data Gateway 的设计模式可以实现数据接口。请注意，虽然 Table Data Gateway 模式在大系统中可能会被限制。但这个也是个诱惑，如果你把数据库访问代码放进控制器的动作方法，`Zend\Db\TableGateway\AbstractTableGateway` 这个类就会暴露这些代码。请不要这么做！
 
 在 `module/Album/src/Album/Model` 路径下新建一个 `Album.php` ：
 
 ```php
- namespace Album\Model;
+namespace Album\Model;
 
- class Album
- {
-     public $id;
-     public $artist;
-     public $title;
+class Album
+{
+    public $id;
+    public $artist;
+    public $title;
 
-     public function exchangeArray($data)
-     {
-         $this->id     = (!empty($data['id'])) ? $data['id'] : null;
-         $this->artist = (!empty($data['artist'])) ? $data['artist'] : null;
-         $this->title  = (!empty($data['title'])) ? $data['title'] : null;
-     }
- }
+    public function exchangeArray($data)
+    {
+        $this->id     = (!empty($data['id'])) ? $data['id'] : null;
+        $this->artist = (!empty($data['artist'])) ? $data['artist'] : null;
+        $this->title  = (!empty($data['title'])) ? $data['title'] : null;
+    }
+}
 ```
 
-`Album` 实体对象是一个简单的 PHP 类。为了与 `Zend\Db` 的 `TableGateway` 类一起工作。需要实现 `exchangeArray()` 方法。这个方法简单地将 data 数组中的数据对应拷贝到实体属性。
+`Album` 实体对象是一个简单的 PHP 类。为了与 `Zend\Db` 的 `TableGateway` 类一起工作。需要实现 `exchangeArray()` 方法。这个方法简单地将 data 数组中的数据拷贝到对应实体属性。
 
 下一步，在 `module/Album/src/Album/Model` 目录下新建 `AlbumTable.php`，内容如下：
 
@@ -123,9 +122,9 @@ class AlbumTable
 
 ## 使用 ServiceManager 来配置 table gateway 然后注入到 AlbumTable 
 
-为了总是使用同一个的 `AlbumTable` 实例，我们将使用 `ServiceManager` 来定义如何创建。这里最容易的是，在模块类中，我们创建一个名为 `getServiceConfig()` 的方法，它可以被 `ModuleManager` 自动调用，适用于 `ServiceManager`。然后，当我们需要它的时候，就可以取回它。
+为了总是使用同一个的 `AlbumTable` 实例，我们将使用 `ServiceManager` 来定义如何创建。最容易的是，在模块类中，我们创建一个名为 `getServiceConfig()` 的方法，它可以被 `ModuleManager` 自动调用，适用于 `ServiceManager`。然后，当我们需要它的时候，就可以取回它。
 
-为了配置 `ServiceManager`，当 `ServiceManager` 需要的时候，我们要么提供一个类的名字或者一个工厂（闭包或者回调），来产生实例化的对象。我们通过实现 `getServiceConfig()` 来提供一个工厂，这个工厂用来创建一个 `AlbumTable`。添加这个方法到 `module/Album` 目录下的 `Module.php` 文件的底部。
+为了配置 `ServiceManager`，在 `ServiceManager` 需要的时候，我们提供一个类的名字或者一个工厂（闭包或者回调），来产生实例化的对象。我们通过实现 `getServiceConfig()` 来提供一个工厂，这个工厂用来创建一个 `AlbumTable`。添加这个方法到 `module/Album` 目录下的 `Module.php` 文件的底部。
 
 ```php
 namespace Album;
@@ -162,7 +161,7 @@ class Module
 }
 ```
 
-这个方法返回 `factories` 的数组，在传递给 `ServiceManager` 之前，通过 `ModuleManager` 进行合并。`Album\Model\AlbumTable` 的工厂使用 `ServiceManager` 来创建一个 `AlbumTableGateway` 对象，以便传递到 `AlbumTable` 对象。一般会告知 `ServiceManager` 对象，`AlbumTableGateway` 对象的创建是通过得到一个 `Zend\Db\Adapter\Adapter`对象（也是从 `ServiceManager` 获取）来完成的，然后使用 `AlbumTableGateway` 对象来创建一个 `TableGateway` 对象。`TableGateway` 对象每当他创建一条新记录时，都会告知一个 `Album` 对象。`TableGateway ` 类使用原型模式创建结果集和实体。这意味着在请求的时候不是实例化，而是系统对克隆先前实例化的对象。参考 [PHP Constructor Best Practices and the Prototype Pattern](http://ralphschindler.com/2012/03/09/php-constructor-best-practices-and-the-prototype-pattern)。
+这个方法返回 `factories` 的数组，在传递给 `ServiceManager` 之前，通过 `ModuleManager` 进行合并。`Album\Model\AlbumTable` 的工厂使用 `ServiceManager` 来创建一个 `AlbumTableGateway` 对象，以便传递到 `AlbumTable` 对象。一般会告知 `ServiceManager` 对象，`AlbumTableGateway` 对象的创建是通过得到一个 `Zend\Db\Adapter\Adapter`对象（也是从 `ServiceManager` 获取）来完成的，然后使用 `AlbumTableGateway` 对象来创建一个 `TableGateway` 对象。`TableGateway` 对象每当他创建一条新记录时，都会告知一个 `Album` 对象。`TableGateway ` 类使用原型模式创建结果集和实体。这意味着在请求的时候不是实例化，而是系统克隆先前实例化的对象。参考 [PHP Constructor Best Practices and the Prototype Pattern](http://ralphschindler.com/2012/03/09/php-constructor-best-practices-and-the-prototype-pattern)。
 
 最终，我们需要配置 `ServiceManager`，让其知道如何获取 `Zend\Db\Adapter\Adapter`。这是通过使用一个工厂类 `Zend\Db\Adapter\AdapterServiceFactory`，我们能在合并配置系统中配置它。Zend Framework 2 的 `ModuleManager` 合并每一个模块的 `module.config.php` 文件中所有的配置，然后合并导出到 `config/autoload` 下的文件（`*.global.php` 和 `*.local.php` 文件）。我们将添加我们的数据库配置信息到 `global.php` 这个文件，这个文件应该提交到你的版本控制系统。如果你想的话，现在可以使用 `local.php` （版本控制系统之外的）来存储数据库的证书。修改 `config/autoload/global.php` （在 Zend 骨架的根下，并不在 Album 模块中），代码如下：
 
@@ -219,7 +218,7 @@ protected $albumTable;
 
 每当我们需要与模型进行交互的时候，就可以在控制器中调用 `getAlbumTable()`。
 
-如果服务定位器在 `Module.php` 中正确配置，那么我们当我们调用 `getAlbumTable()` 时拿到一个 `Album\Model\AlbumTable` 实例。
+如果服务定位器在 `Module.php` 中正确配置，那么在调用 `getAlbumTable()` 时将会拿到一个 `Album\Model\AlbumTable` 实例。
 
 ## 列举 albums
 
@@ -274,7 +273,7 @@ protected $albumTable;
 
 第一件事是我们要为页面设置标题，标题可以在浏览器的标题栏现在，可以在 `<head>` 部分使用视图帮助方法 `headTitle()` 来进行设置标题。然后我们添加一个连接到新的 album。
 
-Zend Framework 2 提供了视图帮助方法 `url()`， 用来创建 URL。`url()` 的第一个参数是 route，用来创建 URL，第二个参数是所有变量的数组，用来填充字段的。在本例中，我们使用 ‘album’ route以及设置两个字段变量 `action` 和 `id`。
+Zend Framework 2 提供了视图帮助方法 `url()`，用来创建 URL。`url()` 的第一个参数是 route，用来创建 URL，第二个参数是所有变量的数组，用来填充字段的。在本例中，我们使用 ‘album’ route以及设置两个字段变量 `action` 和 `id`。
 
 我们遍历了 `$albums` 中从控制器分配的动作。Zend Framework 2 视图系统自动确认了填充到视图脚本域的变量，所以我们不用担心还要像旧框架 Zend Framework 1 中那样使用前缀 `$this->` 来区别变量，当然你仍然可以在这么做。
 
