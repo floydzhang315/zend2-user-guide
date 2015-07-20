@@ -4,7 +4,7 @@
 
 我们现在可以添加新 albums 代码的功能。这分为两个部分：
 
-* 展示表单给用户提供细节
+* 展示表单给用户，提供细节
 
 * 处理表单提交并存储到数据库
 
@@ -13,43 +13,43 @@
 ```php
 namespace Album\Form;
 
- use Zend\Form\Form;
+use Zend\Form\Form;
 
- class AlbumForm extends Form
- {
-     public function __construct($name = null)
-     {
-         // we want to ignore the name passed
-         parent::__construct('album');
+class AlbumForm extends Form
+{
+    public function __construct($name = null)
+    {
+        // we want to ignore the name passed
+        parent::__construct('album');
 
-         $this->add(array(
-             'name' => 'id',
-             'type' => 'Hidden',
-         ));
-         $this->add(array(
-             'name' => 'title',
-             'type' => 'Text',
-             'options' => array(
-                 'label' => 'Title',
-             ),
-         ));
-         $this->add(array(
-             'name' => 'artist',
-             'type' => 'Text',
-             'options' => array(
-                 'label' => 'Artist',
-             ),
-         ));
-         $this->add(array(
-             'name' => 'submit',
-             'type' => 'Submit',
-             'attributes' => array(
-                 'value' => 'Go',
-                 'id' => 'submitbutton',
-             ),
-         ));
-     }
- }
+        $this->add(array(
+           'name' => 'id',
+            'type' => 'Hidden',
+        ));
+        $this->add(array(
+            'name' => 'title',
+            'type' => 'Text',
+            'options' => array(
+                'label' => 'Title',
+            ),
+        ));
+        $this->add(array(
+            'name' => 'artist',
+            'type' => 'Text',
+            'options' => array(
+                'label' => 'Artist',
+            ),
+        ));
+        $this->add(array(
+            'name' => 'submit',
+            'type' => 'Submit',
+            'attributes' => array(
+                'value' => 'Go',
+                'id' => 'submitbutton',
+            ),
+        ));
+    }
+}
 ```
 
 在 `AlbumForm` 的构造函数中，我们需要做一些事情。首先我们要设置表单的名字，调用父类构造函数。接着我们创建四个表单元素：id，title，artist，以及提交按钮。对每一项，我们都要设置各种各样的属性和设置，包括要显示的标签。
@@ -65,130 +65,130 @@ namespace Album\Form;
 ```php
 namespace Album\Model;
 
- // Add these import statements
- use Zend\InputFilter\InputFilter;
- use Zend\InputFilter\InputFilterAwareInterface;
- use Zend\InputFilter\InputFilterInterface;
+// Add these import statements
+use Zend\InputFilter\InputFilter;
+use Zend\InputFilter\InputFilterAwareInterface;
+use Zend\InputFilter\InputFilterInterface;
 
- class Album implements InputFilterAwareInterface
- {
-     public $id;
-     public $artist;
-     public $title;
-     protected $inputFilter;                       // <-- Add this variable
+class Album implements InputFilterAwareInterface
+{
+    public $id;
+    public $artist;
+    public $title;
+    protected $inputFilter;                       // <-- Add this variable
 
-     public function exchangeArray($data)
-     {
-         $this->id     = (isset($data['id']))     ? $data['id']     : null;
-         $this->artist = (isset($data['artist'])) ? $data['artist'] : null;
-         $this->title  = (isset($data['title']))  ? $data['title']  : null;
-     }
+    public function exchangeArray($data)
+    {
+        $this->id     = (isset($data['id']))     ? $data['id']     : null;
+        $this->artist = (isset($data['artist'])) ? $data['artist'] : null;
+        $this->title  = (isset($data['title']))  ? $data['title']  : null;
+    }
 
-     // Add content to these methods:
-     public function setInputFilter(InputFilterInterface $inputFilter)
-     {
-         throw new \Exception("Not used");
-     }
+    // Add content to these methods:
+    public function setInputFilter(InputFilterInterface $inputFilter)
+    {
+        throw new \Exception("Not used");
+    }
 
-     public function getInputFilter()
-     {
-         if (!$this->inputFilter) {
-             $inputFilter = new InputFilter();
+    public function getInputFilter()
+    {
+        if (!$this->inputFilter) {
+            $inputFilter = new InputFilter();
 
-             $inputFilter->add(array(
-                 'name'     => 'id',
-                 'required' => true,
-                 'filters'  => array(
-                     array('name' => 'Int'),
-                 ),
-             ));
+            $inputFilter->add(array(
+                'name'     => 'id',
+                'required' => true,
+                'filters'  => array(
+                    array('name' => 'Int'),
+                ),
+            ));
 
-             $inputFilter->add(array(
-                 'name'     => 'artist',
-                 'required' => true,
-                 'filters'  => array(
-                     array('name' => 'StripTags'),
-                     array('name' => 'StringTrim'),
-                 ),
-                 'validators' => array(
-                     array(
-                         'name'    => 'StringLength',
-                         'options' => array(
-                             'encoding' => 'UTF-8',
-                             'min'      => 1,
-                             'max'      => 100,
-                         ),
-                     ),
-                 ),
-             ));
+            $inputFilter->add(array(
+                'name'     => 'artist',
+                'required' => true,
+                'filters'  => array(
+                    array('name' => 'StripTags'),
+                    array('name' => 'StringTrim'),
+                ),
+                'validators' => array(
+                    array(
+                        'name'    => 'StringLength',
+                        'options' => array(
+                            'encoding' => 'UTF-8',
+                            'min'      => 1,
+                            'max'      => 100,
+                        ),
+                    ),
+                ),
+            ));
 
-             $inputFilter->add(array(
-                 'name'     => 'title',
-                 'required' => true,
-                 'filters'  => array(
-                     array('name' => 'StripTags'),
-                     array('name' => 'StringTrim'),
-                 ),
-                 'validators' => array(
-                     array(
-                         'name'    => 'StringLength',
-                         'options' => array(
-                             'encoding' => 'UTF-8',
-                             'min'      => 1,
-                             'max'      => 100,
-                         ),
-                     ),
-                 ),
-             ));
+            $inputFilter->add(array(
+                'name'     => 'title',
+                'required' => true,
+                'filters'  => array(
+                    array('name' => 'StripTags'),
+                    array('name' => 'StringTrim'),
+                ),
+                'validators' => array(
+                    array(
+                        'name'    => 'StringLength',
+                        'options' => array(
+                            'encoding' => 'UTF-8',
+                            'min'      => 1,
+                            'max'      => 100,
+                        ),
+                    ),
+                ),
+            ));
 
-             $this->inputFilter = $inputFilter;
-         }
+            $this->inputFilter = $inputFilter;
+        }
 
-         return $this->inputFilter;
-     }
- }
+        return $this->inputFilter;
+    }
+}
 ```
 
-`InputFilterAwareInterface` 定义了两方法： `setInputFilter()` 和 `getInputFilter()`。我们需要实现 `getInputFilter()` 方法，而 `setInputFilter()` 只要简单的抛一个异常就行了。
+`InputFilterAwareInterface` 定义了两方法：`setInputFilter()` 和 `getInputFilter()`。我们需要实现 `getInputFilter()` 方法，而 `setInputFilter()` 只要简单的抛一个异常就行了。
 
 在 `getInputFilter()` 中，实例化一个 `InputFilter`，然后添加我们想要的输入框。
-为每个属性对应添加过滤和验证。例如为 `id` 字段添加整型过滤器，为文本元素添加两个过滤器，`StripTags` 和 `StringTrim`，用来一次不想要的 HTML 和不必要的空白字符。还要为这些属性添加 `StringLength` 验证其来确保不会输入太多的字符，好存入数据库。
+为每个属性对应添加过滤和验证。例如为 `id` 字段添加整型过滤器，为文本元素添加两个过滤器，`StripTags` 和 `StringTrim`，用来移除不想要的 HTML 和不必要的空白字符。还要为这些属性添加 `StringLength`，确保不会输入太多的字符，以便存入数据库。
 
 现在需要获取表单进行显示，然后在提交时进行处理。在 `AlbumController` 的 `addAction()` ：
 
 ```php
 // module/Album/src/Album/Controller/AlbumController.php:
 
- //...
- use Zend\Mvc\Controller\AbstractActionController;
- use Zend\View\Model\ViewModel;
- use Album\Model\Album;          // <-- Add this import
- use Album\Form\AlbumForm;       // <-- Add this import
- //...
+//...
+use Zend\Mvc\Controller\AbstractActionController;
+use Zend\View\Model\ViewModel;
+use Album\Model\Album;          // <-- Add this import
+use Album\Form\AlbumForm;       // <-- Add this import
+//...
 
-     // Add content to this method:
-     public function addAction()
-     {
-         $form = new AlbumForm();
-         $form->get('submit')->setValue('Add');
+    // Add content to this method:
+    public function addAction()
+    {
+        $form = new AlbumForm();
+        $form->get('submit')->setValue('Add');
 
-         $request = $this->getRequest();
-         if ($request->isPost()) {
-             $album = new Album();
-             $form->setInputFilter($album->getInputFilter());
-             $form->setData($request->getPost());
+        $request = $this->getRequest();
+        if ($request->isPost()) {
+            $album = new Album();
+            $form->setInputFilter($album->getInputFilter());
+            $form->setData($request->getPost());
 
-             if ($form->isValid()) {
-                 $album->exchangeArray($form->getData());
-                 $this->getAlbumTable()->saveAlbum($album);
+            if ($form->isValid()) {
+                $album->exchangeArray($form->getData());
+                $this->getAlbumTable()->saveAlbum($album);
 
-                 // Redirect to list of albums
-                 return $this->redirect()->toRoute('album');
-             }
-         }
-         return array('form' => $form);
-     }
- //...
+                // Redirect to list of albums
+                return $this->redirect()->toRoute('album');
+            }
+        }
+        return array('form' => $form);
+    }
+//...
 ```
 
 添加 `AlbumForm` 到使用列表之后，我们实现 `addAction()`。看一看 `addAction()` 的内部细节吧：
@@ -198,7 +198,7 @@ namespace Album\Model;
  $form->get('submit')->setValue('Add');
 ```
 
-实例化 `AlbumForm` 然后设置提交按钮的表情为 “Add”。在编辑 album 会使用到不同的标签，就可以复用代码。
+实例化 `AlbumForm` 然后设置提交按钮的标签为 **Add**。在编辑 album 会使用到不同的标签，就可以复用代码。
 
 ```php
  $request = $this->getRequest();
@@ -209,7 +209,7 @@ namespace Album\Model;
      if ($form->isValid()) {
 ```
 
-如果 `Request` 对象的 `isPost()` 方法返回真，表单已经被提交了，从 album 实例设置表单的输入过滤器。然后我们将报文数据设置到表单中，使用表单对象的 `isValid()` 成员函数来检查数据是否有效。
+如果 `Request` 对象的 `isPost()` 方法返回真，表明表单已经被提交了。从 album 实例设置表单的输入过滤器，然后我们将报文数据设置到表单中，使用表单对象的 `isValid()` 成员函数来检查数据是否有效。
 
 ```php
  $album->exchangeArray($form->getData());
@@ -234,26 +234,26 @@ namespace Album\Model;
 现在我们需要在 `add.phtml` 视图脚本中渲染表单。
 
 ```php
- <?php
- // module/Album/view/album/album/add.phtml:
+<?php
+// module/Album/view/album/album/add.phtml:
 
- $title = 'Add new album';
- $this->headTitle($title);
- ?>
+$title = 'Add new album';
+$this->headTitle($title);
+?>
  <h1><?php echo $this->escapeHtml($title); ?></h1>
- <?php
- $form->setAttribute('action', $this->url('album', array('action' => 'add')));
- $form->prepare();
+<?php
+$form->setAttribute('action', $this->url('album', array('action' => 'add')));
+$form->prepare();
 
- echo $this->form()->openTag($form);
- echo $this->formHidden($form->get('id'));
- echo $this->formRow($form->get('title'));
- echo $this->formRow($form->get('artist'));
- echo $this->formSubmit($form->get('submit'));
- echo $this->form()->closeTag();
+echo $this->form()->openTag($form);
+echo $this->formHidden($form->get('id'));
+echo $this->formRow($form->get('title'));
+echo $this->formRow($form->get('artist'));
+echo $this->formSubmit($form->get('submit'));
+echo $this->form()->closeTag();
 ```
 
-我们先展示一个标题，在渲染表单。Zend 框架提供一些视图辅助函数，可以十分简单地完成上诉要求。`form()` 辅助函数有一个  `openTag()` 和 `closeTag()` 方法，用来控制表单打开和关闭。对每一个元素的标签，可以使用 `formRow()`，但是两个元素太单一了，还要使用 `formHidden()` 和 `formSubmit()`。
+我们先展示一个标题，在渲染表单。Zend 框架提供一些视图辅助函数，可以十分简单地完成上诉要求。`form()` 辅助函数有一个  `openTag()` 和 `closeTag()` 方法，用来控制表单的打开和关闭。对每一个元素的标签，可以使用 `formRow()`，但是两个元素太单一了，还要使用 `formHidden()` 和 `formSubmit()`。
 
 ![image](images/stylingandtranslations3.png)
 
@@ -263,11 +263,11 @@ namespace Album\Model;
  echo $this->formCollection($form);
 ```
 
-> 注意：你仍然需要使用 `openTag` 和 `closeTag` 方法来控制表单。上面的代码，你可以替代其他输入语句进行调用 `formCollection`。 
+> 注意：你仍然需要使用 `openTag` 和 `closeTag` 方法来控制表单。上面的代码，你可以替代其他输入语句，调用 `formCollection`。 
 
-将会对表单结构进行迭代，对每个元素调用合适的标签，元素和视图辅助的错误提示，你通过打开和关闭表单标签包装 formCollection($form)。
+这将会对表单结构进行遍历，对每个元素调用合适的标签，元素和视图辅助的错误提示，你通过打开和关闭表单标签包装 formCollection($form)。
 
-现有应该使用程序主页上的 “Add new album” 链接来增加一条新的 album 记录。
+现有应该使用程序主页上的 **Add new album** 链接来增加一条新的 album 记录。
 
 ## 编辑 album
 
@@ -275,74 +275,74 @@ namespace Album\Model;
 
 ```php
 // module/Album/src/Album/Controller/AlbumController.php:
- //...
+//...
 
-     // Add content to this method:
-     public function editAction()
-     {
-         $id = (int) $this->params()->fromRoute('id', 0);
-         if (!$id) {
-             return $this->redirect()->toRoute('album', array(
-                 'action' => 'add'
-             ));
-         }
+    // Add content to this method:
+    public function editAction()
+    {
+        $id = (int) $this->params()->fromRoute('id', 0);
+        if (!$id) {
+            return $this->redirect()->toRoute('album', array(
+                'action' => 'add'
+            ));
+        }
 
-         // Get the Album with the specified id.  An exception is thrown
-         // if it cannot be found, in which case go to the index page.
-         try {
-             $album = $this->getAlbumTable()->getAlbum($id);
-         }
-         catch (\Exception $ex) {
-             return $this->redirect()->toRoute('album', array(
-                 'action' => 'index'
-             ));
-         }
+        // Get the Album with the specified id.  An exception is thrown
+        // if it cannot be found, in which case go to the index page.
+        try {
+            $album = $this->getAlbumTable()->getAlbum($id);
+        }
+        catch (\Exception $ex) {
+            return $this->redirect()->toRoute('album', array(
+                'action' => 'index'
+            ));
+        }
 
-         $form  = new AlbumForm();
-         $form->bind($album);
-         $form->get('submit')->setAttribute('value', 'Edit');
+        $form  = new AlbumForm();
+        $form->bind($album);
+        $form->get('submit')->setAttribute('value', 'Edit');
 
-         $request = $this->getRequest();
-         if ($request->isPost()) {
-             $form->setInputFilter($album->getInputFilter());
-             $form->setData($request->getPost());
+        $request = $this->getRequest();
+        if ($request->isPost()) {
+            $form->setInputFilter($album->getInputFilter());
+            $form->setData($request->getPost());
 
-             if ($form->isValid()) {
-                 $this->getAlbumTable()->saveAlbum($album);
+            if ($form->isValid()) {
+                $this->getAlbumTable()->saveAlbum($album);
 
-                 // Redirect to list of albums
-                 return $this->redirect()->toRoute('album');
-             }
-         }
+                // Redirect to list of albums
+                return $this->redirect()->toRoute('album');
+            }
+        }
 
-         return array(
-             'id' => $id,
-             'form' => $form,
-         );
-     }
- //...
+        return array(
+            'id' => $id,
+            'form' => $form,
+        );
+    }
+//...
 ```
 
-代码看地来很简单。看看不同表单添加一个 album。首先查找配置 route 中 `id`，然后加载对应的 album，代码如下：
+代码看地来很简单。看看表单添加一个 album。首先查找配置 route 中 `id`，然后加载对应的 album，代码如下：
 
 ```php
 $id = (int) $this->params()->fromRoute('id', 0);
- if (!$id) {
-     return $this->redirect()->toRoute('album', array(
-         'action' => 'add'
-     ));
- }
+if (!$id) {
+    return $this->redirect()->toRoute('album', array(
+        'action' => 'add'
+    ));
+}
 
- // Get the album with the specified id.  An exception is thrown
- // if it cannot be found, in which case go to the index page.
- try {
-     $album = $this->getAlbumTable()->getAlbum($id);
- }
- catch (\Exception $ex) {
-     return $this->redirect()->toRoute('album', array(
-         'action' => 'index'
-     ));
- }
+// Get the album with the specified id.  An exception is thrown
+// if it cannot be found, in which case go to the index page.
+try {
+    $album = $this->getAlbumTable()->getAlbum($id);
+}
+catch (\Exception $ex) {
+    return $this->redirect()->toRoute('album', array(
+        'action' => 'index'
+    ));
+}
 ```
 
 `params` 是一个控制器插件，提供一个简便的方式来检索匹配的路由。在 `module.config.php`，我们创建在模块中的 route，使用它来进行检索 `id`。如果 `id` 是零，就会重定向到添加动作，否则，我们继续从数据库中获取 album 实体。
@@ -364,20 +364,20 @@ $id = (int) $this->params()->fromRoute('id', 0);
 
 ```php
 // module/Album/src/Album/Model/Album.php:
- // ...
-     public function exchangeArray($data)
-     {
-         $this->id     = (isset($data['id']))     ? $data['id']     : null;
-         $this->artist = (isset($data['artist'])) ? $data['artist'] : null;
-         $this->title  = (isset($data['title']))  ? $data['title']  : null;
-     }
+// ...
+    public function exchangeArray($data)
+    {
+        $this->id     = (isset($data['id']))     ? $data['id']     : null;
+        $this->artist = (isset($data['artist'])) ? $data['artist'] : null;
+        $this->title  = (isset($data['title']))  ? $data['title']  : null;
+    }
 
-     // Add the following method:
-     public function getArrayCopy()
-     {
-         return get_object_vars($this);
-     }
- // ...
+    // Add the following method:
+    public function getArrayCopy()
+    {
+        return get_object_vars($this);
+    }
+// ...
 ```
 
 复合对象使用 `bind()` 的结果是，我们不用往 `$album` 填充表单的数据，因为已经自动填充好了，只要调用 mappers 的 `saveAlbum()` 来保存修改到数据库。
@@ -390,29 +390,29 @@ $id = (int) $this->params()->fromRoute('id', 0);
 
  $title = 'Edit album';
  $this->headTitle($title);
- ?>
+?>
  <h1><?php echo $this->escapeHtml($title); ?></h1>
 
- <?php
- $form = $this->form;
- $form->setAttribute('action', $this->url(
-     'album',
-     array(
-         'action' => 'edit',
-         'id'     => $this->id,
-     )
- ));
- $form->prepare();
+<?php
+$form = $this->form;
+$form->setAttribute('action', $this->url(
+    'album',
+    array(
+        'action' => 'edit',
+        'id'     => $this->id,
+    )
+));
+$form->prepare();
 
- echo $this->form()->openTag($form);
- echo $this->formHidden($form->get('id'));
- echo $this->formRow($form->get('title'));
- echo $this->formRow($form->get('artist'));
- echo $this->formSubmit($form->get('submit'));
- echo $this->form()->closeTag();
+echo $this->form()->openTag($form);
+echo $this->formHidden($form->get('id'));
+echo $this->formRow($form->get('title'));
+echo $this->formRow($form->get('artist'));
+echo $this->formSubmit($form->get('submit'));
+echo $this->form()->closeTag();
 ```
 
-唯一的变化是使用 ‘Edit Album’ 的标题和设置表单的动作到 ‘edit’ 的动作。
+唯一的变化是使用 **Edit Album** 的标题和设置表单的动作到 **edit** 的动作。
 
 现在可以编辑 albums 了。
 
@@ -420,81 +420,81 @@ $id = (int) $this->params()->fromRoute('id', 0);
 
 为完善我们的程序，我们需要添加删除操作。列表中每一个 album 都有一个删除链接，使用最原始点击方式来对应删除记录。这或许很糟糕，记住使用 HTTP 的规范，执行一个不可撤销的动作，应该使用 POST 而不是使用 GET。
 
-在用户点击删除时，我们要显示一个确认窗口，在用户点击 “yes”后，就会进行删除。如果表单并不重要，就将代码直接写入视图脚本中（毕竟，`Zend\Form` 是可选!）。
+在用户点击删除时，我们要显示一个确认窗口，在用户点击 **yes** 后，就会进行删除。如果表单并不重要，就将代码直接写入视图脚本中（毕竟，`Zend\Form` 是可选！）。
 
 在 `AlbumController::deleteAction()` 写下如下代码：
 
 ```php
 // module/Album/src/Album/Controller/AlbumController.php:
- //...
-     // Add content to the following method:
-     public function deleteAction()
-     {
-         $id = (int) $this->params()->fromRoute('id', 0);
-         if (!$id) {
-             return $this->redirect()->toRoute('album');
-         }
+//...
+    // Add content to the following method:
+    public function deleteAction()
+    {
+        $id = (int) $this->params()->fromRoute('id', 0);
+        if (!$id) {
+            return $this->redirect()->toRoute('album');
+        }
 
-         $request = $this->getRequest();
-         if ($request->isPost()) {
-             $del = $request->getPost('del', 'No');
+        $request = $this->getRequest();
+        if ($request->isPost()) {
+            $del = $request->getPost('del', 'No');
 
-             if ($del == 'Yes') {
-                 $id = (int) $request->getPost('id');
-                 $this->getAlbumTable()->deleteAlbum($id);
-             }
+            if ($del == 'Yes') {
+                $id = (int) $request->getPost('id');
+                $this->getAlbumTable()->deleteAlbum($id);
+            }
 
-             // Redirect to list of albums
-             return $this->redirect()->toRoute('album');
-         }
+            // Redirect to list of albums
+            return $this->redirect()->toRoute('album');
+        }
 
-         return array(
-             'id'    => $id,
-             'album' => $this->getAlbumTable()->getAlbum($id)
-         );
-     }
- //...
+        return array(
+            'id'    => $id,
+            'album' => $this->getAlbumTable()->getAlbum($id)
+        );
+    }
+//...
 ```
 
 在获取匹配 albums 的表单 id，使用请求对象的 `isPost()` 来决定显示确认页面或者直接删除 album。使用表对象的 `deleteAlbum()` 方法删除记录，然后重定向回到 albums 列表。如果不是 `POST` 请求，我们就会检索修正数据库几级了，然后连同 `id` 返回给视图。
 
 视图脚本的简单表单：
 
-```php
- <?php
- // module/Album/view/album/album/delete.phtml:
+```
+<?php
+// module/Album/view/album/album/delete.phtml:
 
- $title = 'Delete album';
- $this->headTitle($title);
- ?>
+$title = 'Delete album';
+$this->headTitle($title);
+?>
  <h1><?php echo $this->escapeHtml($title); ?></h1>
 
  <p>Are you sure that you want to delete
-     '<?php echo $this->escapeHtml($album->title); ?>' by
-     '<?php echo $this->escapeHtml($album->artist); ?>'?
+    '<?php echo $this->escapeHtml($album->title); ?>' by
+    '<?php echo $this->escapeHtml($album->artist); ?>'?
  </p>
- <?php
- $url = $this->url('album', array(
-     'action' => 'delete',
-     'id'     => $this->id,
- ));
- ?>
+<?php
+$url = $this->url('album', array(
+    'action' => 'delete',
+    'id'     => $this->id,
+));
+?>
  <form action="<?php echo $url; ?>" method="post">
- <div>
-     <input type="hidden" name="id" value="<?php echo (int) $album->id; ?>" />
-     <input type="submit" name="del" value="Yes" />
-     <input type="submit" name="del" value="No" />
- </div>
+  <div>
+    <input type="hidden" name="id" value="<?php echo (int) $album->id; ?>" />
+    <input type="submit" name="del" value="Yes" />
+    <input type="submit" name="del" value="No" />
+  </div>
  </form>
 ```
 
-在这个脚本中，我们展示一个带有 “Yes” 和 “No” 按钮的确认信息。如果用户点击 “Yes” 我们就会执行删除操作。
+在这个脚本中，我们展示一个带有 **Yes** 和 **No** 按钮的确认信息。如果用户点击 **Yes** 我们就会执行删除操作。
 
 ## 确保主页显 albums 列表
 
-最后一点。此刻，主页 `http://zf2-tutorial.localhost/` 并没有系那是 albums 列表。
+最后一点。此刻，主页 `http://zf2-tutorial.localhost/` 并没有显示 albums 列表。
 
-这是由于 route 设置在 `Application` 模块中的 `module.config.php`。为了改变设置，打开 `module/Application/config/module.config.php` 找到主页的 route。
+这是由于在 `Application` 模块中的 `module.config.php` route 的设置。为了改变设置，打开 `module/Application/config/module.config.php` 找到主页的 route。
 
 ```php
  'home' => array(
@@ -509,7 +509,7 @@ $id = (int) $this->params()->fromRoute('id', 0);
  ),
 ```
 
-控制器 `Application\Controller\Index` 改为 `Album\Controller\Album`。
+控制器由 `Application\Controller\Index` 改为 `Album\Controller\Album`。
 
 ```php
 'home' => array(
