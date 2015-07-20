@@ -1,6 +1,6 @@
 # 样式和翻译
 
-打包 SkeletonApplication 的样式，但是我们需要改变标题和移除版权信息。
+打包好 SkeletonApplication 的样式，但是我们需要改变标题和移除版权信息。
 
 ZendSkeletonApplication 使用 `Zend\I18n` 的翻译功能来处理所有文字。它使用 `.po` 文件，文件存在 `module/Application/language`，你可以使用 [poedit](http://www.poedit.net/download.php) 来进行编辑。用 poedit 打开 `module/Application/language/en_US.po`。在 `Original` 设置列表中点击 Skeleton Application，然后输入 “Tutorial” 作为翻译的类型。
 
