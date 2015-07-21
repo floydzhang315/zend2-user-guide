@@ -4,7 +4,7 @@
 
 通过控制器动作方法和视图脚本，建立了 `Album` 模块，是时候注意到程序中的模型部分了。记住，模型是解决程序核心目的的一部分（也将模型称之为业务规则），在本例中，也是数据处理的一部分。使用 Zend Framework 中的 `Zend\Db\TableGateway\TableGateway` 类，这个类是用来查找，插入，更新和删除数据库中表的记录的。
 
-通过 PHP 的 PDO 驱动，使用 MySQL，故，创建名为 `zf2tutorial` 数据库，然后运行 SQL 语句创建一个 album 表,并插入一些数据。
+通过 PHP 的 PDO 驱动，使用 MySQL，故，创建名为 `zf2tutorial` 数据库，然后运行 SQL 语句创建一个 **album** 表,并插入一些数据。
 
 ```php
 CREATE TABLE album (
@@ -33,7 +33,7 @@ CREATE TABLE album (
 
 Zend Framework 没有提供 `Zend\Model` 控件，因为模型是你的业务逻辑，取决于你想让它如何工作。根据你的需求，这里任然有很多控件可以供你使用。一种方法是，在你的程序中模型类对应一种实体，然后使用映射器对象来加载和存储实体到数据库。另一种是使用对象关系映射计算，例如 Doctrine 或者 Propel。
 
-在这个向导中，每一个 album 就是一个 `Album` 对象（或者说是实体），通过使用 `Zend\Db\TableGateway\TableGateway` 构建一个 `AlbumTable` 类，然后使用 `AlbumTable` 构建一个简单的模型。在数据库的表中，Table Data Gateway 的设计模式可以实现数据接口。请注意，虽然 Table Data Gateway 模式在大系统中可能会被限制。但这个也是个诱惑，如果你把数据库访问代码放进控制器的动作方法，`Zend\Db\TableGateway\AbstractTableGateway` 这个类就会暴露这些代码。请不要这么做！
+在这个向导中，每一个专辑就是一个 `Album` 对象（或者说是实体），通过使用 `Zend\Db\TableGateway\TableGateway` 构建一个 `AlbumTable` 类，然后使用 `AlbumTable` 构建一个简单的模型。在数据库的表中，Table Data Gateway 的设计模式可以实现数据接口。请注意，虽然 Table Data Gateway 模式在大系统中可能会被限制。但这个也是个诱惑，如果你把数据库访问代码放进控制器的动作方法，`Zend\Db\TableGateway\AbstractTableGateway` 这个类就会暴露这些代码。请不要这么做！
 
 在 `module/Album/src/Album/Model` 路径下新建一个 `Album.php` ：
 
@@ -116,7 +116,7 @@ class AlbumTable
 }
 ```
 
-这里做了许多事情。首先，我们在构造函数中设置了保护属性 `$tableGateway` 为 `TableGateway` 的实例。我们将使用这个来属性操作数据库的 album 表。
+这里做了许多事情。首先，我们在构造函数中设置了保护属性 `$tableGateway` 为 `TableGateway` 的实例。我们将使用这个来属性操作数据库的 **album** 表。
 
 继续创建一些帮助方法，程序会使用 table gateWay 和这个实例。`fetchAll()` 检索数据库中 albums 表所有的记录，然后将结果返回 `ResultSet`，`getAlbum()` 通过 id 检索一个 `Album` 对象，`saveAlbum()`要么创建一个新的记录，或更新已经存在记录，`deleteAlbum()`移除一条记录。这些代码自解释的。
 
@@ -220,9 +220,9 @@ protected $albumTable;
 
 如果服务定位器在 `Module.php` 中正确配置，那么在调用 `getAlbumTable()` 时将会拿到一个 `Album\Model\AlbumTable` 实例。
 
-## 列举 albums
+## 列举专辑
 
-为了列举 albums，我们需要从模型中检索他们然后传递到视图。为此，我们在 `AlbumController` 填写 `indexAction()`。更新 `AlbumController` 的 `indexAction()` 方式如下：
+为了列举专辑，我们需要从模型中检索他们然后传递到视图。为此，我们在 `AlbumController` 填写 `indexAction()`。更新 `AlbumController` 的 `indexAction()` 方式如下：
 
 ```php
 // module/Album/src/Album/Controller/AlbumController.php:
@@ -236,7 +236,7 @@ protected $albumTable;
  // ...
 ```
 
-在 Zend Framework 2 中，为了在视图中设置变量，我们返回一个 `ViewModel` 实例，构造函数的第一个参数是一个来自动作的数组，包含我们需要的数据。然后会自动传递到视图脚本。ViewModel 对象还允许我们改变视图脚本,但是默认是使用`{controller name}/{action name}`。我们现在可以填写视图脚本 `index.phtml`。
+在 Zend Framework 2 中，为了在视图中设置变量，我们返回一个 `ViewModel` 实例，构造函数的第一个参数是一个来自动作的数组，包含我们需要的数据。然后会自动传递到视图脚本。`ViewModel` 对象还允许我们改变视图脚本,但是默认是使用`{controller name}/{action name}`。我们现在可以填写视图脚本 `index.phtml`。
 
 ```php
 <?php

@@ -1,8 +1,8 @@
 # 表单和动作
 
-## 添加新的 album
+## 添加新的专辑
 
-我们现在可以添加新 albums 代码的功能。这分为两个部分：
+我们现在可以添加新专辑代码的功能。这分为两个部分：
 
 * 展示表单给用户，提供细节
 
@@ -198,7 +198,7 @@ use Album\Form\AlbumForm;       // <-- Add this import
  $form->get('submit')->setValue('Add');
 ```
 
-实例化 `AlbumForm` 然后设置提交按钮的标签为 **Add**。在编辑 album 会使用到不同的标签，就可以复用代码。
+实例化 `AlbumForm` 然后设置提交按钮的标签为 **Add**。在编辑专辑会使用到不同的标签，就可以复用代码。
 
 ```php
  $request = $this->getRequest();
@@ -209,7 +209,7 @@ use Album\Form\AlbumForm;       // <-- Add this import
      if ($form->isValid()) {
 ```
 
-如果 `Request` 对象的 `isPost()` 方法返回真，表明表单已经被提交了。从 album 实例设置表单的输入过滤器，然后我们将报文数据设置到表单中，使用表单对象的 `isValid()` 成员函数来检查数据是否有效。
+如果 `Request` 对象的 `isPost()` 方法返回真，表明表单已经被提交了。从专辑实例设置表单的输入过滤器，然后我们将报文数据设置到表单中，使用表单对象的 `isValid()` 成员函数来检查数据是否有效。
 
 ```php
  $album->exchangeArray($form->getData());
@@ -223,7 +223,7 @@ use Album\Form\AlbumForm;       // <-- Add this import
  return $this->redirect()->toRoute('album');
 ```
 
-在保存新记录之后，使用重定向控制器插件重定向到 albums 的列表。
+在保存新记录之后，使用重定向控制器插件重定向到专辑的列表。
 
 ```php
  return array('form' => $form);
@@ -269,9 +269,9 @@ echo $this->form()->closeTag();
 
 现有应该使用程序主页上的 **Add new album** 链接来增加一条新的 album 记录。
 
-## 编辑 album
+## 编辑专辑
 
-编辑 album 是添加一个几乎相同的，所以代码都很简单。这次在 `AlbumController` 中使用 `editAction()` ：
+编辑专辑和添加一个专辑的代码几乎是相同，所以代码都很简单。这次在 `AlbumController` 中使用 `editAction()` ：
 
 ```php
 // module/Album/src/Album/Controller/AlbumController.php:
@@ -323,7 +323,7 @@ echo $this->form()->closeTag();
 //...
 ```
 
-代码看地来很简单。看看表单添加一个 album。首先查找配置 route 中 `id`，然后加载对应的 album，代码如下：
+代码看地来很简单。看看表单添加一个专辑。首先查找配置 route 中 `id`，然后加载对应的专辑，代码如下：
 
 ```php
 $id = (int) $this->params()->fromRoute('id', 0);
@@ -345,9 +345,9 @@ catch (\Exception $ex) {
 }
 ```
 
-`params` 是一个控制器插件，提供一个简便的方式来检索匹配的路由。在 `module.config.php`，我们创建在模块中的 route，使用它来进行检索 `id`。如果 `id` 是零，就会重定向到添加动作，否则，我们继续从数据库中获取 album 实体。
+`params` 是一个控制器插件，提供一个简便的方式来检索匹配的路由。在 `module.config.php`，我们创建在模块中的 route，使用它来进行检索 `id`。如果 `id` 是零，就会重定向到添加动作，否则，我们继续从数据库中获取专辑实体。
 
-必须检查，确保指定 `id` 的 Album 可以被找到。如果不行，数据访问方法将会抛出异常。捕获该异常并重新输入用户索引页面。
+必须检查，确保指定 `id` 的专辑可以被找到。如果不行，数据访问方法将会抛出异常。捕获该异常并重新输入用户索引页面。
 
 ```php
  $form = new AlbumForm();
@@ -382,7 +382,7 @@ catch (\Exception $ex) {
 
 复合对象使用 `bind()` 的结果是，我们不用往 `$album` 填充表单的数据，因为已经自动填充好了，只要调用 mappers 的 `saveAlbum()` 来保存修改到数据库。
 
-视图模板，`edit.phtml`，添加一个 album 的如下所示：
+视图模板，`edit.phtml`，添加一个专辑的如下所示：
 
 ```php
 <?php
@@ -414,11 +414,11 @@ echo $this->form()->closeTag();
 
 唯一的变化是使用 **Edit Album** 的标题和设置表单的动作到 **edit** 的动作。
 
-现在可以编辑 albums 了。
+现在可以编辑专辑了。
 
-## 删除 album
+## 删除专辑
 
-为完善我们的程序，我们需要添加删除操作。列表中每一个 album 都有一个删除链接，使用最原始点击方式来对应删除记录。这或许很糟糕，记住使用 HTTP 的规范，执行一个不可撤销的动作，应该使用 POST 而不是使用 GET。
+为完善我们的程序，我们需要添加删除操作。列表中每一个专辑都有一个删除链接，使用最原始点击方式来对应删除记录。这或许很糟糕，记住使用 **HTTP** 的规范，执行一个不可撤销的动作，应该使用 **POST** 而不是使用 **GET**。
 
 在用户点击删除时，我们要显示一个确认窗口，在用户点击 **yes** 后，就会进行删除。如果表单并不重要，就将代码直接写入视图脚本中（毕竟，`Zend\Form` 是可选！）。
 
@@ -456,7 +456,7 @@ echo $this->form()->closeTag();
 //...
 ```
 
-在获取匹配 albums 的表单 id，使用请求对象的 `isPost()` 来决定显示确认页面或者直接删除 album。使用表对象的 `deleteAlbum()` 方法删除记录，然后重定向回到 albums 列表。如果不是 `POST` 请求，我们就会检索修正数据库几级了，然后连同 `id` 返回给视图。
+在获取匹配专辑的表单 id，使用请求对象的 `isPost()` 来决定显示确认页面或者直接删除专辑。使用表对象的 `deleteAlbum()` 方法删除记录，然后重定向回到专辑列表。如果不是 `POST` 请求，我们就会检索修正数据库几级了，然后连同 `id` 返回给视图。
 
 视图脚本的简单表单：
 
@@ -490,9 +490,9 @@ $url = $this->url('album', array(
 
 在这个脚本中，我们展示一个带有 **Yes** 和 **No** 按钮的确认信息。如果用户点击 **Yes** 我们就会执行删除操作。
 
-## 确保主页显 albums 列表
+## 确保主页显专辑列表
 
-最后一点。此刻，主页 `http://zf2-tutorial.localhost/` 并没有显示 albums 列表。
+最后一点。此刻，主页 `http://zf2-tutorial.localhost/` 并没有显示专辑列表。
 
 这是由于在 `Application` 模块中的 `module.config.php` route 的设置。为了改变设置，打开 `module/Application/config/module.config.php` 找到主页的 route。
 
@@ -509,7 +509,7 @@ $url = $this->url('album', array(
  ),
 ```
 
-控制器由 `Application\Controller\Index` 改为 `Album\Controller\Album`。
+将控制器由 `Application\Controller\Index` 改为 `Album\Controller\Album`。
 
 ```php
 'home' => array(

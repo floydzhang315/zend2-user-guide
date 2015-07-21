@@ -1,17 +1,17 @@
 # 路由和控制器
 
-我们将构建一个非常简单的清单系统来展示我们的 album 集合。主页列举了我们的集合以及允许添加，修改和删除 album 。因此需要如下页面：
+我们将构建一个非常简单的清单系统来展示我们的 album 集合。主页列举了我们的集合以及允许添加，修改和删除专辑 。因此需要如下页面：
 
 | 页面 | 描述 |
 |:--:|:--:|
-| Home | 显示 album 的列表,并提供链接来编辑和删除 album，也可以添加新 album。 |
-| Add new album | 这个页面提供表单来添加新 album。 |
-| Edit album | 这个页面提供表单来编辑 album。 |
-| Delete album | 这个页面将会确认我们是否要删除 album，然后删除。 |
+| Home | 显示专辑的列表,并提供链接来编辑和删除专辑，也可以添加新专辑。 |
+| Add new album | 这个页面提供表单来添加新专辑。 |
+| Edit album | 这个页面提供表单来编辑专辑。 |
+| Delete album | 这个页面将会确认我们是否要删除专辑，然后删除。 |
 
 在构建文件之前，最重要的是要理解框架组织页面的方式。程序的每个页面被称为一个动作，动作被分组划分给控制器模块。因此，你通常需要将相关联的动作划分到同一个控制器。例如，一个新闻控制器或许有如下动作：`current`，`archived` 和 `view`。
 
-给 albums 申请四个页面，将这些页面分组划分给单个控制器 `AlbumController` ，在 Album 模块中作为动作。这四个动作如下：
+给专辑申请四个页面，将这些页面分组划分给单个控制器 `AlbumController` ，在 `Album` 模块中作为动作。这四个动作如下：
 
 | Page | Controller | Action |
 |:--:|:--:|:--:|
@@ -20,7 +20,7 @@
 | Edit album | `AlbumController` | `edit` |
 | Delete album | `AlbumController` | `delete` |
 
-URL 指定了一个特定的动作来使用 route ，这个 route 在 `module.config.php` 模块定义。我们将添加一个 route 到我们的 album 动作中去。更新模块的配置文件与新代码会高亮显示。
+URL 指定了一个特定的动作来使用 route ，这个 route 在 `module.config.php` 模块定义。我们将添加一个 route 到我们的专辑动作中去。更新模块的配置文件与新代码会高亮显示。
 
 ```php
 return array(
@@ -58,16 +58,16 @@ return array(
 );
 ```
 
-route 的名字是 ‘album’，其类型是 ‘segment’。segment route 允许我们指定 URL 模式中的占位符 (route)，将其映射到命名参数匹配的 route。名字为 `/album[/:action][/:id]` 路由，将配备所有由 `/album` 开头的 URL。下一个 segment 是可选的动作名，最后一个字段将会被映射到可选id。方括号括起来参数的是可选的，这些约束可以让我们明确知道在字段中字符是可预料的，所以动作的第一个单词被限制为字母，随后的字符可以是数字、字母、下划线和连字符。我们规定 id 必须是数字。
+route 的名字是 ‘album’，其类型是 ‘segment’。segment route 允许我们指定 URL 模式中的占位符 (route)，将其映射到命名参数匹配的 route。名字为 `/album[/:action][/:id]` 路由，将配备所有由 `/album` 开头的 URL。下一个 segment 是可选的动作名，最后一个字段将会被映射到可选 id。方括号括起来参数的是可选的，这些约束可以让我们明确知道在字段中字符是可预料的，所以动作的第一个单词被限制为字母，随后的字符可以是数字、字母、下划线和连字符。我们规定 id 必须是数字。
 
 route 允许我们可以有如下的 URL 格式：
 
 | URL | Page | Action |
 |:--:|:--:|:--:|
-| `/album` | 主页 (alumn 列表) | `index` |
-| `/album/add` | 添加新的 album | `add` |
-| `/album/edit/2` | 编辑 id 为 2 的 album | `edit` |
-| `/album/delete/4` | 删除 id 为 4 的 album | `delete` |
+| `/album` | 主页 (专辑列表) | `index` |
+| `/album/add` | 添加新的专辑 | `add` |
+| `/album/edit/2` | 编辑 id 为 2 的专辑 | `edit` |
+| `/album/delete/4` | 删除 id 为 4 的专辑 | `delete` |
 
 ## 创建控制器
 
