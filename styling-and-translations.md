@@ -10,13 +10,13 @@ ZendSkeletonApplication 使用 `Zend\I18n` 的翻译功能来处理所有文字�
 
 移除版权信息，我们需要编辑 `Application` 模块的 `layout.phtml` 视图脚本。
 
-```php
+```
  // module/Application/view/layout/layout.phtml:
  // Remove this line:
  <p>&copy; 2005 - 2014 by Zend Technologies Ltd. <?php echo $this->translate('All
  rights reserved.') ?></p>
 ```
 
-现在这个页面看起来比之前苗条多了。
+现在这个页面看起来比之前纤细多了。
 
 ![](images/stylingandtranslations2.png)
