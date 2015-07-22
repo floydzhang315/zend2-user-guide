@@ -4,13 +4,13 @@
 
 我们现在可以添加新专辑代码的功能。这分为两个部分：
 
-* 展示表单给用户，提供细节
+* 展示表单给用户用来提供细节
 
 * 处理表单提交并存储到数据库
 
-我们用 `Zend\Form` 来处理这些。`Zend\Form`  控件管理表单和处理表单验证，添加一个 `Zend\InputFilter` 到 `Album` 实体。开始写我们的新类 `Album\Form\AlbumForm`，这个类继承自 `Zend\Form\Form`。在 `module/Album/src/Album/Form` 目录下新建一个 `AlbumForm.php` 文件，内容如下：
+我们用 `Zend\Form` 来处理这些。`Zend\Form` 控件管理表单和处理表单验证，添加一个 `Zend\InputFilter` 到 `Album` 实体。开始写我们的新类 `Album\Form\AlbumForm`，这个类继承自 `Zend\Form\Form`。在 `module/Album/src/Album/Form` 目录下新建一个 `AlbumForm.php` 文件，内容如下：
 
-```php
+```
 namespace Album\Form;
 
 use Zend\Form\Form;
@@ -54,7 +54,7 @@ class AlbumForm extends Form
 
 在 `AlbumForm` 的构造函数中，我们需要做一些事情。首先我们要设置表单的名字，调用父类构造函数。接着我们创建四个表单元素：id，title，artist，以及提交按钮。对每一项，我们都要设置各种各样的属性和设置，包括要显示的标签。
 
-> **注意**
+**注意**
 
 > HTML-Forms 可以使用 `POST` 和 `GET` 来发送。ZF2s 默认使用 `POST`，因此你不必显式的设置这个选项。如果你想改成 `GET`，你所做的就是需要在构造函数中指定。
 
@@ -62,7 +62,7 @@ class AlbumForm extends Form
 
 我们需要为表单设置验证。在 Zend Framework 2，验证通过使用输入过滤器处理，这个过滤器可以是独立的或者可以在类中定义。它继承自 `InputFilterAwareInterface` 接口类，就像一个模型实体。在本例中，将输入过滤器添加到 Album 类，`module/Album/src/Album/Model` 路径下的 `Album.php` 文件修改如下：
 
-```php
+```
 namespace Album\Model;
 
 // Add these import statements
@@ -156,7 +156,7 @@ class Album implements InputFilterAwareInterface
 
 现在需要获取表单进行显示，然后在提交时进行处理。在 `AlbumController` 的 `addAction()` ：
 
-```php
+```
 // module/Album/src/Album/Controller/AlbumController.php:
 
 //...
@@ -193,14 +193,14 @@ use Album\Form\AlbumForm;       // <-- Add this import
 
 添加 `AlbumForm` 到使用列表之后，我们实现 `addAction()`。看一看 `addAction()` 的内部细节吧：
 
-```php
+```
  $form = new AlbumForm();
  $form->get('submit')->setValue('Add');
 ```
 
 实例化 `AlbumForm` 然后设置提交按钮的标签为 **Add**。在编辑专辑会使用到不同的标签，就可以复用代码。
 
-```php
+```
  $request = $this->getRequest();
  if ($request->isPost()) {
      $album = new Album();
@@ -209,31 +209,31 @@ use Album\Form\AlbumForm;       // <-- Add this import
      if ($form->isValid()) {
 ```
 
-如果 `Request` 对象的 `isPost()` 方法返回真，表明表单已经被提交了。从专辑实例设置表单的输入过滤器，然后我们将报文数据设置到表单中，使用表单对象的 `isValid()` 成员函数来检查数据是否有效。
+如果 `Request` 对象的 `isPost()` 方法返回 true，表明表单已经被提交了。从专辑实例设置表单的输入过滤器，然后我们将报文数据设置到表单中，使用表单对象的 `isValid()` 成员函数来检查数据是否有效。
 
-```php
+```
  $album->exchangeArray($form->getData());
  $this->getAlbumTable()->saveAlbum($album);
 ```
 
 如果表单是有效的，就从表单中获取数据，使用 `saveAlbum()` 存储到模型中。
 
-```php
+```
 // Redirect to list of albums
  return $this->redirect()->toRoute('album');
 ```
 
 在保存新记录之后，使用重定向控制器插件重定向到专辑的列表。
 
-```php
+```
  return array('form' => $form);
 ```
 
-最终，返回我们想指定给视图的变量。在本例中，仅仅是表单对象。注意 Zend Framework 2 也运行返回变量的数组，然后指定给视图，这将会在场景后边创建一个 `ViewModel` 。可以少敲点字。
+最终，返回我们想指定给视图的变量。在本例中，仅仅是表单对象。注意 Zend Framework 2 也运行返回变量的数组，然后指定给视图，这将会在场景后边创建一个 `ViewModel` 。可以少输入点字。
 
 现在我们需要在 `add.phtml` 视图脚本中渲染表单。
 
-```php
+```
 <?php
 // module/Album/view/album/album/add.phtml:
 
@@ -253,17 +253,17 @@ echo $this->formSubmit($form->get('submit'));
 echo $this->form()->closeTag();
 ```
 
-我们先展示一个标题，在渲染表单。Zend 框架提供一些视图辅助函数，可以十分简单地完成上诉要求。`form()` 辅助函数有一个  `openTag()` 和 `closeTag()` 方法，用来控制表单的打开和关闭。对每一个元素的标签，可以使用 `formRow()`，但是两个元素太单一了，还要使用 `formHidden()` 和 `formSubmit()`。
+我们先展示一个标题，然后再渲染表单。Zend 框架提供一些视图辅助函数，可以十分简单地完成上诉要求。`form()` 辅助函数有一个  `openTag()` 和 `closeTag()` 方法，用来控制表单的打开和关闭。对每一个元素的标签，可以使用 `formRow()`，但是两个元素太单一了，还要使用 `formHidden()` 和 `formSubmit()`。
 
 ![image](images/stylingandtranslations3.png)
 
-二者取其一，渲染表单的过程可以绑定到视图辅助方法 `formCollection` 上。例如，在上面的视图脚本替代所有的表单渲染的输出语句是：
+或者，渲染表单的过程可以绑定到视图辅助方法 `formCollection` 上。例如，在上面的视图脚本替代所有的表单渲染的输出语句是：
 
-```php
+```
  echo $this->formCollection($form);
 ```
 
-> 注意：你仍然需要使用 `openTag` 和 `closeTag` 方法来控制表单。上面的代码，你可以替代其他输入语句，调用 `formCollection`。 
+注意：你仍然需要使用 `openTag` 和 `closeTag` 方法来控制表单。上面的代码，你可以替代其他输入语句，调用 `formCollection`。 
 
 这将会对表单结构进行遍历，对每个元素调用合适的标签，元素和视图辅助的错误提示，你通过打开和关闭表单标签包装 formCollection($form)。
 
@@ -323,9 +323,9 @@ echo $this->form()->closeTag();
 //...
 ```
 
-代码看地来很简单。看看表单添加一个专辑。首先查找配置 route 中 `id`，然后加载对应的专辑，代码如下：
+代码看地来很简单。让我们看看与添加 album 之间的不同。首先查找配置 route 中 `id`，然后加载对应的专辑，代码如下：
 
-```php
+```
 $id = (int) $this->params()->fromRoute('id', 0);
 if (!$id) {
     return $this->redirect()->toRoute('album', array(
@@ -354,15 +354,16 @@ catch (\Exception $ex) {
  $form->bind($album);
  $form->get('submit')->setAttribute('value', 'Edit');
 ```
-表单的 `bind()`方法附着于模型。有如下两个方式：
+
+表单的 `bind()` 方法附着于模型。有如下两个方式：
 
 * 当显示表单时，每个元素的初始值都从模型中提取。
 
-* 在 `isValid()` 成功验证后,表单中的数据推送回模型中。
+* 在 `isValid()` 成功验证后，表单中的数据推送回模型中。
 
 这些操作通过复合对象完成的。有许多的复合对象，但是只会使用 Zend\Stdlib\Hydrator\ArraySerializable 作为默认复合对象，这个复合对象在模型指定了两个方法：`getArrayCopy()` 和 `exchangeArray()`。我们早已在 Album 实体中写好了 `exchangeArray()`，所以只要写好 `getArrayCopy()`：
 
-```php
+```
 // module/Album/src/Album/Model/Album.php:
 // ...
     public function exchangeArray($data)
@@ -384,7 +385,7 @@ catch (\Exception $ex) {
 
 视图模板，`edit.phtml`，添加一个专辑的如下所示：
 
-```php
+```
 <?php
  // module/Album/view/album/album/edit.phtml:
 
@@ -424,7 +425,7 @@ echo $this->form()->closeTag();
 
 在 `AlbumController::deleteAction()` 写下如下代码：
 
-```php
+```
 // module/Album/src/Album/Controller/AlbumController.php:
 //...
     // Add content to the following method:
@@ -456,12 +457,12 @@ echo $this->form()->closeTag();
 //...
 ```
 
-在获取匹配专辑的表单 id，使用请求对象的 `isPost()` 来决定显示确认页面或者直接删除专辑。使用表对象的 `deleteAlbum()` 方法删除记录，然后重定向回到专辑列表。如果不是 `POST` 请求，我们就会检索修正数据库几级了，然后连同 `id` 返回给视图。
+在获取匹配专辑的表单 id，使用请求对象的 `isPost()` 来决定显示确认页面或者直接删除专辑。使用表对象的 `deleteAlbum()` 方法删除记录，然后重定向回到专辑列表。如果不是 `POST` 请求，我们就会取回正确的数据库记录，然后连同 `id` 返回给视图。
 
 视图脚本的简单表单：
 
 ```
-<?php
+<?
 // module/Album/view/album/album/delete.phtml:
 
 $title = 'Delete album';
@@ -490,13 +491,13 @@ $url = $this->url('album', array(
 
 在这个脚本中，我们展示一个带有 **Yes** 和 **No** 按钮的确认信息。如果用户点击 **Yes** 我们就会执行删除操作。
 
-## 确保主页显专辑列表
+## 确保主页显示专辑列表
 
 最后一点。此刻，主页 `http://zf2-tutorial.localhost/` 并没有显示专辑列表。
 
 这是由于在 `Application` 模块中的 `module.config.php` route 的设置。为了改变设置，打开 `module/Application/config/module.config.php` 找到主页的 route。
 
-```php
+```
  'home' => array(
      'type' => 'Zend\Mvc\Router\Http\Literal',
      'options' => array(
@@ -511,7 +512,7 @@ $url = $this->url('album', array(
 
 将控制器由 `Application\Controller\Index` 改为 `Album\Controller\Album`。
 
-```php
+```
 'home' => array(
      'type' => 'Zend\Mvc\Router\Http\Literal',
      'options' => array(
