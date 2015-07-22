@@ -1,7 +1,7 @@
 - [开始使用 Zend Framework 2](get-started.md)
 - [开始构建一个框架应用程序](skeleton-app.md)
 - [模块](modules.md)
-- [路由和控制器](routing-and-contrillers.md)
+- [路由和控制器](routing-and-controllers.md)
 - [数据库和模型](database-and-models.md)
 - [样式和翻译](styling-and-translations.md)
 - [表单和动作](forms-and-actions.md)
