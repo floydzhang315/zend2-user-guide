@@ -42,8 +42,6 @@ Generating autoload files
   The process timed out.
 ```
 
-then your connection was too slow to download the entire package in time, and composer timed out. To avoid this, instead of running:
-
 这是说明连接太慢导致无法及时将全部包下载下来，然后 Composer 超时。要避免这个问题，替换一下运行命令：
 
 ```
