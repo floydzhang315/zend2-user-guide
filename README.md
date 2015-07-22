@@ -15,7 +15,7 @@ Zend Framework 2 是一个开放源代码的 PHP5 开发框架，可用于来开
 ## 你将学会
 
 + Zend Framework 2 基本框架
-+ 实用 Zend Framework 2 开发简单的存储系统
++ 使用 Zend Framework 2 开发简单的存储系统
 
 |更新日期    |更新内容
 |----------|--------------------
