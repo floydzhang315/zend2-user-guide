@@ -1,13 +1,13 @@
 # 路由和控制器
 
-我们将构建一个非常简单的清单系统来展示我们的 album 集合。主页列举了我们的集合以及允许添加，修改和删除专辑 。因此需要如下页面：
+我们将构建一个非常简单的清单系统来展示我们的 album 集合。主页列举了我们的集合以及允许添加，修改和删除专辑。因此需要如下页面：
 
 | 页面 | 描述 |
 |:--:|:--:|
-| Home | 显示专辑的列表,并提供链接来编辑和删除专辑，也可以添加新专辑。 |
-| Add new album | 这个页面提供表单来添加新专辑。 |
-| Edit album | 这个页面提供表单来编辑专辑。 |
-| Delete album | 这个页面将会确认我们是否要删除专辑，然后删除。 |
+| 主页 | 显示专辑的列表,并提供链接来编辑和删除专辑，也可以添加新专辑。 |
+| 添加新专辑 | 这个页面提供表单来添加新专辑。 |
+| 编辑专辑 | 这个页面提供表单来编辑专辑。 |
+| 删除专辑 | 这个页面将会确认我们是否要删除专辑，然后删除。 |
 
 在构建文件之前，最重要的是要理解框架组织页面的方式。程序的每个页面被称为一个动作，动作被分组划分给控制器模块。因此，你通常需要将相关联的动作划分到同一个控制器。例如，一个新闻控制器或许有如下动作：`current`，`archived` 和 `view`。
 
@@ -20,9 +20,9 @@
 | Edit album | `AlbumController` | `edit` |
 | Delete album | `AlbumController` | `delete` |
 
-URL 指定了一个特定的动作来使用 route ，这个 route 在 `module.config.php` 模块定义。我们将添加一个 route 到我们的专辑动作中去。更新模块的配置文件与新代码会高亮显示。
+URL 指定了一个特定的动作来使用 route，这个 route 在 `module.config.php` 模块定义。我们将添加一个 route 到我们的专辑动作中去。更新模块的配置文件与新代码会高亮显示。
 
-```php
+```
 return array(
     'controllers' => array(
         'invokables' => array(
@@ -73,13 +73,13 @@ route 允许我们可以有如下的 URL 格式：
 
 现在已经准备好构建控制器了。在 Zend Framework 2 中，控制器是一个类，也就是所谓的 `{Controller name}Controller`。注意，`{Controller name}` 的命名必须是大写字母开头。控制器的定义必须存放在模块 `Controller` 文件夹下的，名字格式为 `{Controller name}Controller.php` 的文件中。在本例中，模块文件夹是 `module/Album/src/Album/Controller`。每一个动作是在控制器类中一个公有的方法，其命名格式是 `{action name}Action`。在本例中，`{action name}` 应该以小写字母开头。
 
-> **注意**
+**注意**
 
-> 这个是习惯用法。 Zend Framework 2 并不提供其他限制性控制器，用户必须实现 `Zend\Stdlib\Dispatchable` 这个接口类。这个框架提供了两个抽象类： `Zend\Mvc\Controller\AbstractActionController` 和 `Zend\Mvc\Controller\AbstractRestfulController`。我们可以使用标准的 `AbstractActionController` 类，如果你打算编写一个 RESTful 的 web 服务器，`AbstractRestfulController` 或许更有用。
+> 这个是习惯用法。 Zend Framework 2 并不提供其他限制性控制器，用户必须实现 `Zend\Stdlib\Dispatchable` 这个接口类。这个框架提供了两个抽象类： `Zend\Mvc\Controller\AbstractActionController` 和 `Zend\Mvc\Controller\AbstractRestfulController`。我们可以使用标准的 `AbstractActionController` 类，如果你打算编写一个 RESTful 的 Web 服务器，`AbstractRestfulController` 或许更有用。
 
 让我们继续在 `zf2-tutorials/module/Album/src/Album/Controller` 路径下的 `AlbumController.php` 的文件中构建控制器类：
 
-```php
+```
 namespace Album\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController;
@@ -105,18 +105,18 @@ class AlbumController extends AbstractActionController
 }
 ```
 
-> **注意**
+**注意**
 
 > 确保 `Album` 模块已经通过 `config/application.config.php` 注册。你也可以为 `Album` 模块提供一个 [Module Class](http://framework.zend.com/manual/current/en/modules/zend.module-manager.module-class.html#zend-module-manager-module-class)，以便在 MVC 中使用。
 
-> **注意**
+**注意**
 
 > 我们已经在 `module/Album/config/module.config.php` 中的 ‘controller’ 部分注册了信息。
 
 现在已经构建了四个动作，建立视图就可以运行了。每一个动作的 URLs 如下：
 
 | URL | Method called |
-|:-----:|:---------------:|
+|-----|:---------------:|
 | `http://zf2-tutorial.localhost/album` | `Album\Controller\AlbumController::indexAction` |
 | `http://zf2-tutorial.localhost/album/add` | `Album\Controller\AlbumController::addAction` |
 | `http://zf2-tutorial.localhost/album/edit` | `Album\Controller\AlbumController::editAction` |

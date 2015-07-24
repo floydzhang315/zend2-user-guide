@@ -10,6 +10,6 @@ Zend Framework 2 程序最重要的部分是 [modules](http://framework.zend.com
 
 为了将请求和控制器以及动作映射起来，我们使用了 [routes](http://framework.zend.com/manual/current/en/modules/zend.mvc.routing.html#zend-mvc-routing)。
 
-最重要的是持久化数据，包括使用 [Zend\Db](http://framework.zend.com/manual/current/en/modules/zend.db.adapter.html#zend-db-adapter) 来联接一个数据库。输入数据通过 [input filters](http://framework.zend.com/manual/current/en/modules/zend.input-filter.intro.html#zend-input-filter-intro) 和 [Zend\Form](http://framework.zend.com/manual/current/en/modules/zend.form.intro.html#zend-form-intro) 进行过滤和验证，他们提供了一个强大的桥梁来链接域模型和视图层之间。
+最重要的是持久化数据，包括使用 [Zend\Db](http://framework.zend.com/manual/current/en/modules/zend.db.adapter.html#zend-db-adapter) 来联接一个数据库。输入数据通过 [input filters](http://framework.zend.com/manual/current/en/modules/zend.input-filter.intro.html#zend-input-filter-intro) 和 [Zend\Form](http://framework.zend.com/manual/current/en/modules/zend.form.intro.html#zend-form-intro) 进行过滤和验证，他们提供了一个强大的桥梁来链接域模型和视图层。
 
-[Zend\View](http://framework.zend.com/manual/current/en/modules/zend.view.quick-start.html#zend-view-quick-start)，加上大量的[view helpers](http://framework.zend.com/manual/current/en/modules/zend.view.helpers.html#zend-view-helpers)，负责MVC中的视图堆栈。
+[Zend\View](http://framework.zend.com/manual/current/en/modules/zend.view.quick-start.html#zend-view-quick-start)，加上大量的 [view helpers](http://framework.zend.com/manual/current/en/modules/zend.view.helpers.html#zend-view-helpers)，负责 MVC 中的视图堆栈。
